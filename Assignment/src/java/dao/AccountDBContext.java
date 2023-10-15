@@ -5,6 +5,8 @@
 package dao;
 
 import entity.Account;
+import entity.Feature;
+import entity.Role;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +49,7 @@ public class AccountDBContext extends DBContext<Account> {
             stm.setString(1, entity.getEmail());
             stm.setString(2, entity.getPassword());
             ResultSet rs = stm.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 Account loggedAccount = new Account();
                 loggedAccount.setEmail(rs.getString("email"));
                 return loggedAccount;
@@ -56,10 +58,37 @@ public class AccountDBContext extends DBContext<Account> {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-        
+
     }
-    
-    public Account getRoleAndFeature() {
-        String sql = ""
+
+    public ArrayList<Role> getRoleAndFeature(String email, String url) {
+        ArrayList<Role> roles = new ArrayList<>();
+        try {
+            String sql = "select r.role_id, r.role_name, f.feature_id, f.url from account a\n"
+                    + "inner join account_role ar on ar.email = a.email\n"
+                    + "inner join [role] r on r.role_id = ar.role_id\n"
+                    + "inner join role_feature rf on rf.role_id = r.role_id\n"
+                    + "inner join feature f on f.feature_id = rf.feature_id\n"
+                    + "where a.email = ? and f.[url] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, email);
+            stm.setString(2, url);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Role role = new Role();
+                role.setRoleId(rs.getInt("role_id"));
+                role.setRoleName(rs.getString("role_name"));
+                
+                Feature feature = new Feature();
+                feature.setFeatureId(rs.getInt("feature_id"));
+                feature.setUrl(rs.getString("url"));
+                
+                role.getFeatures().add(feature);
+                roles.add(role);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return roles;
     }
 }

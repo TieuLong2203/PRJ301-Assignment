@@ -4,56 +4,30 @@
  */
 package controller.authentication;
 
+import controller.authentication.AuthenticationController;
 import dao.AccountDBContext;
 import entity.Account;
+import entity.Role;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 /**
  *
  * @author luulo
  */
 @WebServlet(name = "AuthorizationController", urlPatterns = {"/AuthorizationController"})
-public class AuthorizationController extends AuthenticationController {
+public abstract class AuthorizationController extends AuthenticationController {
 
-    private boolean isAuthorized(Account loggAccount, HttpServletRequest request) {
-        String email = loggAccount.getEmail();
+    private boolean isAuthorized(Account loggedAccount, HttpServletRequest request) {
+        String email = loggedAccount.getEmail();
         String url = request.getServletPath();
-        
-    }
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+        AccountDBContext accountDb = new AccountDBContext();
+        loggedAccount.setRoles(accountDb.getRoleAndFeature(email, url));
+        return 1 <= loggedAccount.getRoles().size();
     }
 
     /**
@@ -68,12 +42,23 @@ public class AuthorizationController extends AuthenticationController {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (isAuthorized(loggedAccount, request)) {
+            doGet(request, response, loggedAccount, loggedAccount.getRoles());
+        } else {
+            response.getWriter().print("Access denied!!!");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, Account loggedAccount) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (isAuthorized(loggedAccount, request)) {
+            doPost(request, response, loggedAccount, loggedAccount.getRoles());
+        } else {
+            response.getWriter().print("Access denied!!!");
+        }
     }
 
+    protected abstract void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount, ArrayList<Role> roles) throws ServletException, IOException;
+
+    protected abstract void doPost(HttpServletRequest request, HttpServletResponse response, Account loggedAccount, ArrayList<Role> roles) throws ServletException, IOException;
 }

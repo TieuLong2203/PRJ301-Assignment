@@ -30,7 +30,7 @@ public class TimetableController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getRequestDispatcher("view/takeattendance.jsp").forward(request, response);
+        request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
     } 
 
     /** 

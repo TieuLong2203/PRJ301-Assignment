@@ -40,4 +40,12 @@ public class Account extends BaseEntity {
         this.password = password;
     }
 
+    public ArrayList<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<Role> roles) {
+        this.roles = roles;
+    }
+
 }
