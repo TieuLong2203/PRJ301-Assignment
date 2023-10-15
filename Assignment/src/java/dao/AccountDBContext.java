@@ -56,6 +56,12 @@ public class AccountDBContext extends DBContext<Account> {
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return null;
 
@@ -64,12 +70,12 @@ public class AccountDBContext extends DBContext<Account> {
     public ArrayList<Role> getRoleAndFeature(String email, String url) {
         ArrayList<Role> roles = new ArrayList<>();
         try {
-            String sql = "select r.role_id, r.role_name, f.feature_id, f.url from account a\n"
-                    + "inner join account_role ar on ar.email = a.email\n"
-                    + "inner join [role] r on r.role_id = ar.role_id\n"
-                    + "inner join role_feature rf on rf.role_id = r.role_id\n"
-                    + "inner join feature f on f.feature_id = rf.feature_id\n"
-                    + "where a.email = ? and f.[url] = ?";
+            String sql = "SELECT r.role_id, r.role_name, f.feature_id, f.url FROM account a\n"
+                    + "INNER JOIN account_role ar ON ar.email = a.email\n"
+                    + "INNER JOIN [role] r ON r.role_id = ar.role_id\n"
+                    + "INNER JOIN role_feature rf ON rf.role_id = r.role_id\n"
+                    + "INNER JOIN feature f ON f.feature_id = rf.feature_id\n"
+                    + "WHERE a.email = ? AND f.[url] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, email);
             stm.setString(2, url);

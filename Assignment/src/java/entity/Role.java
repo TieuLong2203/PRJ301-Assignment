@@ -17,6 +17,9 @@ public class Role extends BaseEntity {
     private ArrayList<Feature> features = new ArrayList<>();
     private ArrayList<Account> accounts = new ArrayList<>();
 
+    public Role() {
+    }
+
     public int getRoleId() {
         return roleId;
     }

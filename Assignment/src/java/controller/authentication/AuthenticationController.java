@@ -51,8 +51,8 @@ public abstract class AuthenticationController extends HttpServlet {
                     return true;
                 }
             }
+            return false;
         }
-        return false;
     }
 
     protected abstract void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount)

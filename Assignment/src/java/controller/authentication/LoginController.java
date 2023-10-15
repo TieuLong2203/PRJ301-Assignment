@@ -66,7 +66,7 @@ public class LoginController extends HttpServlet {
                 response.addCookie(cookieEmail);
                 response.addCookie(cookiePassword);
             }
-            request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
+            request.getRequestDispatcher("view/home.jsp").forward(request, response);
         }
         else {
             response.getWriter().print("Incorrect username or password");

@@ -16,6 +16,9 @@ public class Feature extends BaseEntity {
     private String url;
     private ArrayList<Role> roles = new ArrayList<>();
 
+    public Feature() {
+    }
+
     public int getFeatureId() {
         return featureId;
     }
