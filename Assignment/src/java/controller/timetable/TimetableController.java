@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author luulo
  */
 @WebServlet(name="WeeklyTimetable", urlPatterns={"/timetable"})
-public class WeeklyTimetable extends HttpServlet { 
+public class TimetableController extends HttpServlet { 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 

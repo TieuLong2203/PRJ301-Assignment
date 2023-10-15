@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>FPT University</title>
     <link rel="stylesheet" href="css/login.css">
 </head>
@@ -15,9 +16,9 @@
     </div>
     <div class="container">
         <h2>Login</h2>
-        <form>
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        <form action="login" method="POST">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" placeholder="Enter your email (@fpt//@fe)" required>
 
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
