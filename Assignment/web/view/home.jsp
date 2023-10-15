@@ -17,9 +17,18 @@
         function takeAttendance() {
             window.location.href = 'takeattendance';
         }
+        function logout() {
+            var conf = confirm("Do you want to loggout?");
+            if(conf) {
+                window.location.href = 'logout';
+            }
+        }
     </script>
 </head>
 <body>
+    <div class="header">
+        <button onclick="logout()">Logout</button>
+    </div>
     <div class="container">
         <h1>Welcome to the Home Page</h1>
 
