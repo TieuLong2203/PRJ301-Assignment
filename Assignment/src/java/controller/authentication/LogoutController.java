@@ -6,7 +6,6 @@
 package controller.authentication;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -37,7 +36,7 @@ public class LogoutController extends HttpServlet {
         cookiePassword.setMaxAge(-1);
         response.addCookie(cookieEmail);
         response.addCookie(cookiePassword);
-        request.getRequestDispatcher("index.html").forward(request, response);
+        response.sendRedirect("login");
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

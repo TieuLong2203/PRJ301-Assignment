@@ -18,7 +18,7 @@
             window.location.href = 'takeattendance';
         }
         function logout() {
-            var conf = confirm("Do you want to loggout?");
+            var conf = confirm("Do you want to logout?");
             if(conf) {
                 window.location.href = 'logout';
             }
