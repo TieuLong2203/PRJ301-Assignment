@@ -76,7 +76,7 @@ public abstract class AuthenticationController extends HttpServlet {
         if (isAuthentication(request)) {
             doGet(request, response, (Account) request.getSession().getAttribute("account"));
         } else {
-            response.getWriter().print("Access denied!!!");
+            response.sendRedirect("/login");
         }
     }
 
@@ -94,7 +94,7 @@ public abstract class AuthenticationController extends HttpServlet {
         if (isAuthentication(request)) {
             doPost(request, response, (Account) request.getSession().getAttribute("account"));
         } else {
-            response.getWriter().print("Access denied!!!");
+            response.sendRedirect("/login");
         }
     }
 
