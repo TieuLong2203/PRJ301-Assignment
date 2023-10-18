@@ -4,6 +4,8 @@
  */
 package entity;
 
+import java.sql.Date;
+
 /**
  *
  * @author luulo
@@ -13,14 +15,34 @@ public class Lecture extends BaseEntity {
     private String lectureId;
     private String lectureName;
     private String lectureEmail;
+    private Date dob;
+    private boolean gender;
 
     public Lecture() {
     }
 
-    public Lecture(String lectureId, String lectureName, String lectureEmail) {
+    public Lecture(String lectureId, String lectureName, String lectureEmail, Date dob, boolean gender) {
         this.lectureId = lectureId;
         this.lectureName = lectureName;
         this.lectureEmail = lectureEmail;
+        this.dob = dob;
+        this.gender = gender;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 
     public String getLectureId() {

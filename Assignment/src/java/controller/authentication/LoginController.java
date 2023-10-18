@@ -6,7 +6,9 @@
 package controller.authentication;
 
 import dao.AccountDBContext;
+import dao.CampusDBContext;
 import entity.Account;
+import entity.Campus;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
@@ -34,7 +37,10 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getRequestDispatcher("index.html").forward(request, response);
+        CampusDBContext campusDb = new CampusDBContext();
+        ArrayList<Campus> campuses = campusDb.list();
+        request.setAttribute("campuses", campuses);
+        request.getRequestDispatcher("view/login.jsp").forward(request, response);
     } 
 
     /** 
@@ -50,6 +56,10 @@ public class LoginController extends HttpServlet {
         Account param = new Account();
         param.setEmail(request.getParameter("email"));
         param.setPassword(request.getParameter("password"));
+        Campus campus = new Campus();
+        campus.setCampusAddress("address");
+        campus.setCampusId(request.getParameter("campus"));
+        param.setCampus(campus);
         AccountDBContext accountDb = new AccountDBContext();
         Account loggedAccount = accountDb.get(param);
         if(loggedAccount != null) {

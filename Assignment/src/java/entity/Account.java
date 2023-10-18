@@ -15,13 +15,23 @@ public class Account extends BaseEntity {
     private String email;
     private String password;
     private ArrayList<Role> roles = new ArrayList<>();
+    private Campus campus;
 
     public Account() {
     }
 
-    public Account(String email, String password) {
+    public Account(String email, String password, Campus campus) {
         this.email = email;
         this.password = password;
+        this.campus = campus;
+    }
+
+    public Campus getCampus() {
+        return campus;
+    }
+
+    public void setCampus(Campus campus) {
+        this.campus = campus;
     }
 
     public String getEmail() {

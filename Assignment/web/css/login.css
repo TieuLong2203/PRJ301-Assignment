@@ -82,6 +82,12 @@ body {
   border-radius: 3px;
 }
 
+.campus {
+    background-color: #e09500;
+    color: white;
+    margin-bottom: 10px;
+}
+
 .container form input[type="submit"] {
   background: #e09500;
   color: #fff;

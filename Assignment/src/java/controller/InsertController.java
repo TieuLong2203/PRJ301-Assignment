@@ -6,10 +6,10 @@
 package controller;
 
 import controller.authentication.AuthorizationController;
+import dao.StudentDBContext;
 import entity.Account;
 import entity.Role;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +33,8 @@ public class InsertController extends AuthorizationController{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount, ArrayList<Role> roles) throws ServletException, IOException {
-        request.getRequestDispatcher("view/insert.jsp").forward(request, response);
+        StudentDBContext studentDb = new StudentDBContext();
+        studentDb.insert(200);
     }
 
     @Override

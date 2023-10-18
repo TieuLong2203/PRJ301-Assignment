@@ -5,6 +5,7 @@
 package dao;
 
 import entity.Account;
+import entity.Campus;
 import entity.Feature;
 import entity.Role;
 import java.sql.PreparedStatement;
@@ -43,15 +44,19 @@ public class AccountDBContext extends DBContext<Account> {
     @Override
     public Account get(Account entity) {
         try {
-            String sqlGetAccount = "SELECT email FROM account\n"
-                    + "WHERE email = ? AND [password] = ?";
+            String sqlGetAccount = "SELECT email, [password], campus_id FROM account \n"
+                    + "WHERE email = ? AND [password] = ? AND campus_id = ?";
             PreparedStatement stm = connection.prepareStatement(sqlGetAccount);
             stm.setString(1, entity.getEmail());
             stm.setString(2, entity.getPassword());
+            stm.setString(3, entity.getCampus().getCampusId());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 Account loggedAccount = new Account();
                 loggedAccount.setEmail(rs.getString("email"));
+                Campus campus = new Campus();
+                campus.setCampusId(rs.getString("campus_id"));
+                loggedAccount.setCampus(campus);
                 return loggedAccount;
             }
         } catch (SQLException ex) {
@@ -84,11 +89,11 @@ public class AccountDBContext extends DBContext<Account> {
                 Role role = new Role();
                 role.setRoleId(rs.getInt("role_id"));
                 role.setRoleName(rs.getString("role_name"));
-                
+
                 Feature feature = new Feature();
                 feature.setFeatureId(rs.getInt("feature_id"));
                 feature.setUrl(rs.getString("url"));
-                
+
                 role.getFeatures().add(feature);
                 roles.add(role);
             }

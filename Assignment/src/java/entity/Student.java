@@ -4,6 +4,9 @@
  */
 package entity;
 
+import java.sql.Date;
+import java.util.ArrayList;
+
 /**
  *
  * @author luulo
@@ -13,14 +16,35 @@ public class Student extends BaseEntity {
     private String studentId;
     private String studentName;
     private String studentEmail;
+    private boolean gender;
+    private Date dob;
+    private ArrayList<Group> groups = new ArrayList<>();
 
     public Student() {
     }
 
-    public Student(String studentId, String studentName, String studentEmail) {
+    public Student(String studentId, String studentName, String studentEmail, boolean gender, Date dob) {
         this.studentId = studentId;
         this.studentName = studentName;
         this.studentEmail = studentEmail;
+        this.gender = gender;
+        this.dob = dob;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
     }
 
     public String getStudentId() {
