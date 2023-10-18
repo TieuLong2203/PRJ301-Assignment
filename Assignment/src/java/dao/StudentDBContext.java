@@ -64,7 +64,7 @@ public class StudentDBContext extends DBContext<Student> {
                 String studentName = firstName + " " + middleName + " " + lastName;
 
                 // Generate student email
-                String studentEmail = lastName.toLowerCase() + firstName.toLowerCase().charAt(0) + middleName.toLowerCase().charAt(0) + "@fpt.edu.vn";
+                String studentEmail = lastName.toLowerCase() + firstName.toLowerCase().charAt(0) + middleName.toLowerCase().charAt(0) + studentId.toLowerCase() + "@fpt.edu.vn";
 
                 // Generate random gender (true for male, false for female)
                 boolean isMale = random.nextBoolean();
