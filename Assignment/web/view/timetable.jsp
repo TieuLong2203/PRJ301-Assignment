@@ -35,7 +35,7 @@
         </style>
     </head>
     <body>
-        <h1>Weekly Timetable for Student Name</h1>
+        <h1>Weekly Timetable for <span>${requestScope.email}</span></h1>
 
         <p>Note: These activities do not include extra-curricular activities, such as club activities...</p>
 

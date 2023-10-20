@@ -23,6 +23,9 @@
                 window.location.href = 'logout';
             }
         }
+        function insert() {
+            window.location.href = 'insert';
+        }
     </script>
 </head>
 <body>
@@ -44,7 +47,7 @@
 
         <div class="section">
             <h2>Insert</h2>
-            <button id="insert">Insert</button>
+            <button id="insert" onclick="insert()">Insert</button>
         </div>
     </div>
 </body>
