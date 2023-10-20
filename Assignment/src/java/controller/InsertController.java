@@ -6,6 +6,7 @@
 package controller;
 
 import controller.authentication.AuthorizationController;
+import dao.LectureDBContext;
 import dao.StudentDBContext;
 import entity.Account;
 import entity.Role;
@@ -33,8 +34,7 @@ public class InsertController extends AuthorizationController{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount, ArrayList<Role> roles) throws ServletException, IOException {
-        StudentDBContext studentDb = new StudentDBContext();
-        studentDb.insert(200);
+        request.getRequestDispatcher("view/insert.jsp").forward(request, response);
     }
 
     @Override

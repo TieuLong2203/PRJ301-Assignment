@@ -5,7 +5,9 @@
 package dao;
 
 import entity.Student;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,13 @@ import java.util.logging.Logger;
  * @author luulo
  */
 public class StudentDBContext extends DBContext<Student> {
+    
+    private String generateStudentID(String lastStudentId) {
+        String tail = lastStudentId.substring(2);
+        int number = Integer.parseInt(tail);
+        number++;
+        return "HE" + number;
+    }
 
     @Override
     public ArrayList<Student> list() {
@@ -37,7 +46,20 @@ public class StudentDBContext extends DBContext<Student> {
 
     @Override
     public void insert(Student entity) {
-
+        try {
+            String studentName = entity.getStudentName();
+            boolean gender = entity.isGender();
+            Date dob = entity.getDob();
+            String sqlGetLastStudentId = "SELECT TOP 1 student_id FROM student\n"
+                    + "ORDER BY student_id DESC";
+            PreparedStatement stm1 = connection.prepareStatement(sqlGetLastStudentId);
+            ResultSet rs = stm1.executeQuery();
+            String lastStudentId = rs.getString("student_id");
+            String studentId = generateStudentID(lastStudentId);
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     @Override
@@ -81,11 +103,13 @@ public class StudentDBContext extends DBContext<Student> {
                     Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 java.sql.Date dobDate = new java.sql.Date(javaDate.getTime());
-                
+
                 String sql = "INSERT INTO account (email, password, campus_id)\n"
                         + "VALUES (?, ?, ?);\n"
                         + "INSERT INTO student (student_id, student_name, student_email, gender, dob)\n"
-                        + "VALUES (?, ?, ?, ?, ?)";
+                        + "VALUES (?, ?, ?, ?, ?)\n"
+                        + "INSERT INTO account_role (email, role_id)\n"
+                        + "VALUES (?, ?)";
                 PreparedStatement stm = connection.prepareStatement(sql);
                 stm.setString(1, studentEmail);
                 stm.setString(2, "123");
@@ -95,6 +119,8 @@ public class StudentDBContext extends DBContext<Student> {
                 stm.setString(6, studentEmail);
                 stm.setBoolean(7, isMale);
                 stm.setDate(8, dobDate);
+                stm.setString(9, studentEmail);
+                stm.setInt(10, 3);
                 stm.executeUpdate();
 
             } catch (SQLException ex) {
