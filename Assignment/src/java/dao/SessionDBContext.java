@@ -5,6 +5,8 @@
 package dao;
 
 import entity.Account;
+import entity.Course;
+import entity.Group;
 import entity.Lecture;
 import entity.Room;
 import entity.Session;
@@ -13,7 +15,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,10 +55,12 @@ public class SessionDBContext extends DBContext<Session> {
     public ArrayList<Session> list(Date startDate, Date endDate, Account loggedAccount) {
         ArrayList<Session> sessions = new ArrayList<>();
         try {
-            String sqlGetSession = "SELECT ses.group_id, ses.lecture_id, ses.slot_id, ses.room_id, g.group_name FROM student s\n"
-                    + "INNER JOIN student_belong_to_group sbtg ON s.student_id = sbtg.student_id\n"
-                    + "INNER JOIN [session] ses ON ses.group_id = sbtg.group_id\n"
+            String sqlGetSession = "SELECT ses.session_id, ses.group_id, g.group_name, ses.lecture_id, g.course_id, sl.slot_id, sl.start_time, sl.end_time, r.room_id, ses.session_date FROM [session] ses\n"
                     + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
+                    + "INNER JOIN student_belong_to_group sbtg ON g.group_id = sbtg.group_id\n"
+                    + "INNER JOIN student s ON s.student_id = sbtg.student_id\n"
+                    + "INNER JOIN slot sl ON sl.slot_id = ses.slot_id\n"
+                    + "INNER JOIN room r ON r.room_id = ses.room_id\n"
                     + "WHERE ses.session_date >= ? AND ses.session_date <= ? AND s.student_email = ?";
             PreparedStatement stm = connection.prepareStatement(sqlGetSession);
             stm.setDate(1, startDate);
@@ -67,12 +73,29 @@ public class SessionDBContext extends DBContext<Session> {
                 Lecture lecture = new Lecture();
                 lecture.setLectureId(rs.getString("lecture_id"));
                 Slot slot = new Slot();
-                slot.setSlotId("");
+                slot.setSlotId(Integer.parseInt(rs.getString("slot_id")));
+                slot.setEndTime(rs.getTime("end_time").toString());
+                slot.setStartTime(rs.getTime("start_time").toString());
+                Group group = new Group();
+                group.setGroupId(Integer.parseInt(rs.getString("group_id")));
+                group.setGroupName(rs.getString("group_name"));
+                Course course = new Course();
+                course.setCourseId(rs.getString("course_id"));
+                Session ses = new Session();
+                ses.setSessionId(Integer.parseInt(rs.getString("session_id")));
+                ses.setCourse(course);
+                ses.setLecture(lecture);
+                ses.setGroup(group);
+                ses.setRoom(room);
+                ses.setSlot(slot);
+                ses.setSessionDate(rs.getDate("session_date"));
+                sessions.add(ses);
             }
             return sessions;
         } catch (SQLException ex) {
             Logger.getLogger(SessionDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return sessions;
     }
 
 }

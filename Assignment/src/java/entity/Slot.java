@@ -4,6 +4,8 @@
  */
 package entity;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luulo
@@ -13,6 +15,7 @@ public class Slot extends BaseEntity {
     private int slotId;
     private String startTime;
     private String endTime;
+    private ArrayList<Session> sessions = new ArrayList<>();
 
     public Slot() {
     }
@@ -21,6 +24,14 @@ public class Slot extends BaseEntity {
         this.slotId = slotId;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public ArrayList<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(ArrayList<Session> sessions) {
+        this.sessions = sessions;
     }
 
     public int getSlotId() {

@@ -4,6 +4,7 @@
     Author     : luulo
 --%>
 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -26,7 +27,8 @@
                 border: 1px solid #000;
                 padding: 10px;
                 text-align: center;
-                min-width: 150px; /* Minimum width of each cell */
+                min-width: 200px; /* Minimum width of each cell */
+                max-width: 200px;
             }
             th {
                 color: white;
@@ -52,7 +54,7 @@
         </ul>
 
         <p><strong>Select Timetable Period:</strong></p>
-        <form action="your_timetable_servlet_or_jsp" method="post">
+        <form action="timetable" method="post">
             <label for="startDate">Start Date: </label>
             <input type="date" id="startDate" name="startDate">
 
@@ -65,44 +67,33 @@
         <div class="table-container">
             <table>
                 <tr>
-                    <th>Day/Time</th>
-                    <th>Monday</th>
-                    <th>Tuesday</th>
-                    <th>Wednesday</th>
-                    <th>Thursday</th>
-                    <th>Friday</th>
-                    <th>Saturday</th>
-                    <th>Sunday</th>
-                    <th>Monday</th>
-                    <th>Tuesday</th>
-                    <th>Wednesday</th>
-                    <th>Thursday</th>
-                    <th>Friday</th>
-                    <th>Saturday</th>
-                    <th>Sunday</th>
+                    <td>Day/Time</td>
+                    <c:forEach items="${requestScope.dates}" var="date">
+                        <td>
+                            <fmt:formatDate value="${date}" pattern="dd-MM-yyyy" var="formattedDate" />
+                            ${formattedDate}
+                        </td>
+                    </c:forEach>
                     <!-- Add more day headers as needed -->
                 </tr>
-                <tr>
-                    <td>8:00 AM - 10:00 AM</td>
-                    <td>
-                        <p onclick="">PRJ301</p>
-                        <p></p>
-                    </td>
-                    <td>Class 2</td>
-                    <td>Class 3</td>
-                    <td>Class 4</td>
-                    <td>Class 5</td>
-                    <td>Class 6</td>
-                    <td>Class 7</td>
-                    <td>Class 1</td>
-                    <td>Class 2</td>
-                    <td>Class 3</td>
-                    <td>Class 4</td>
-                    <td>Class 5</td>
-                    <td>Class 6</td>
-                    <td>Class 7</td>
-                    <!-- Add more classes for each day and time slot -->
-                </tr>
+                <c:forEach items="${requestScope.slots}" var="slot">
+                    <tr>
+                        <th>
+                            Slot: ${slot.slotId} <br>
+                            ${slot.startTime} -> ${slot.endTime}
+                        </th>
+                        <c:forEach items="${requestScope.dates}" var="date">
+                            <td>
+                                <c:forEach items="${requestScope.sessions}" var="ses">
+                                    <c:if test="${ses.sessionDate eq date and ses.slot.slotId eq slot.slotId}">
+                                        ${ses.course.courseId} - ${ses.lecture.lectureId} <br> 
+                                        ${ses.room.roomId} - ${ses.group.groupName}
+                                    </c:if>
+                                </c:forEach>
+                            </td>
+                        </c:forEach>
+                    </tr>
+                </c:forEach>
                 <!-- Add more time slots and classes for each day -->
             </table>
         </div>

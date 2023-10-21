@@ -12,18 +12,19 @@ import java.sql.Date;
  */
 public class Session extends BaseEntity {
 
-    private String sessionId;
+    private int sessionId;
     private Group group;
     private Lecture lecture;
     private Slot slot;
     private Room room;
     private int sessionIndex;
     private Date sessionDate;
+    private Course course;
 
     public Session() {
     }
 
-    public Session(String sessionId, Group group, Lecture lecture, Slot slot, Room room, int sessionIndex, Date sessionDate) {
+    public Session(int sessionId, Group group, Lecture lecture, Slot slot, Room room, int sessionIndex, Date sessionDate, Course course) {
         this.sessionId = sessionId;
         this.group = group;
         this.lecture = lecture;
@@ -31,13 +32,22 @@ public class Session extends BaseEntity {
         this.room = room;
         this.sessionIndex = sessionIndex;
         this.sessionDate = sessionDate;
+        this.course = course;
     }
 
-    public String getSessionId() {
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public int getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(String sessionId) {
+    public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
     }
 
