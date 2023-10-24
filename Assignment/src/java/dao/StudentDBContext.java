@@ -47,7 +47,7 @@ public class StudentDBContext extends DBContext<Student> {
 
     @Override
     public void insert(Student entity) {
-        
+
     }
 
     @Override
@@ -118,7 +118,7 @@ public class StudentDBContext extends DBContext<Student> {
         }
 
     }
-    
+
     public void insert(Student entity, Campus paramCampus) {
         try {
             String studentName = entity.getStudentName();
@@ -129,7 +129,7 @@ public class StudentDBContext extends DBContext<Student> {
             PreparedStatement stm1 = connection.prepareStatement(sqlGetLastStudentId);
             ResultSet rs = stm1.executeQuery();
             String lastStudentId = "";
-            if(rs.next()) {
+            if (rs.next()) {
                 lastStudentId = rs.getString("student_id");
             }
             String studentId = generateStudentID(lastStudentId);
@@ -167,6 +167,30 @@ public class StudentDBContext extends DBContext<Student> {
                 Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public ArrayList<Student> list(int sessionId) {
+        ArrayList<Student> students = new ArrayList<>();
+        try {
+            String sqlGetStudents = "SELECT s.student_id, s.student_name, s.student_email FROM [session] ses\n"
+                    + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
+                    + "INNER JOIN [student_belong_to_group] sbtg ON sbtg.group_id = ses.group_id\n"
+                    + "INNER JOIN [student] s ON s.student_id = sbtg.student_id\n"
+                    + "WHERE ses.session_id = ?";
+            PreparedStatement stm = connection.prepareStatement(sqlGetStudents);
+            stm.setInt(1, sessionId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentId(rs.getString("student_id"));
+                student.setStudentName(rs.getString("student_name"));
+                student.setStudentEmail(rs.getString("student_email"));
+                students.add(student);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return students;
     }
 
 }

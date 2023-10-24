@@ -20,11 +20,12 @@ public class Session extends BaseEntity {
     private int sessionIndex;
     private Date sessionDate;
     private Course course;
+    private boolean isAttended;
 
     public Session() {
     }
 
-    public Session(int sessionId, Group group, Lecture lecture, Slot slot, Room room, int sessionIndex, Date sessionDate, Course course) {
+    public Session(int sessionId, Group group, Lecture lecture, Slot slot, Room room, int sessionIndex, Date sessionDate, Course course, boolean isAttended) {
         this.sessionId = sessionId;
         this.group = group;
         this.lecture = lecture;
@@ -33,6 +34,15 @@ public class Session extends BaseEntity {
         this.sessionIndex = sessionIndex;
         this.sessionDate = sessionDate;
         this.course = course;
+        this.isAttended = isAttended;
+    }
+
+    public boolean isIsAttended() {
+        return isAttended;
+    }
+
+    public void setIsAttended(boolean isAttended) {
+        this.isAttended = isAttended;
     }
 
     public Course getCourse() {

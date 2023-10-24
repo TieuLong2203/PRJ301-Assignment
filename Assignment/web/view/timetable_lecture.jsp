@@ -38,13 +38,13 @@
             <table>
                 <tr>
                     <td>Day/Time</td>
-                <c:forEach items="${requestScope.dates}" var="date">
-                    <td>
-                    <fmt:formatDate value="${date}" pattern="dd-MM-yyyy" var="formattedDate" />
-                    ${formattedDate}
-                    </td>
-                </c:forEach>
-                <!-- Add more day headers as needed -->
+                    <c:forEach items="${requestScope.dates}" var="date">
+                        <td>
+                            <fmt:formatDate value="${date}" pattern="dd-MM-yyyy" var="formattedDate" />
+                            ${formattedDate}
+                        </td>
+                    </c:forEach>
+                    <!-- Add more day headers as needed -->
                 </tr>
                 <c:forEach items="${requestScope.slots}" var="slot">
                     <tr>
@@ -52,16 +52,20 @@
                             Slot: ${slot.slotId} <br>
                             ${slot.startTime} -> ${slot.endTime}
                         </th>
-                    <c:forEach items="${requestScope.dates}" var="date">
-                        <td>
-                        <c:forEach items="${requestScope.sessions}" var="ses">
-                            <c:if test="${ses.sessionDate eq date and ses.slot.slotId eq slot.slotId}">
-                                ${ses.course.courseId}<br> 
-                                ${ses.room.roomId} - ${ses.group.groupName}
-                            </c:if>
+                        <c:forEach items="${requestScope.dates}" var="date">
+                            <td>
+                                <c:forEach items="${requestScope.sessions}" var="ses">
+                                    <c:if test="${ses.sessionDate eq date and ses.slot.slotId eq slot.slotId}">
+                                        <a href="attendance?session_id=${ses.sessionId}">
+                                            ${ses.course.courseId}<br> 
+                                            ${ses.room.roomId} <br> 
+                                            ${ses.group.groupName}
+                                        </a>
+                                        <p>${ses.isAttended eq true ? '(Attended)' : '(Not yet)'}</p>
+                                    </c:if>
+                                </c:forEach>
+                            </td>
                         </c:forEach>
-                        </td>
-                    </c:forEach>
                     </tr>
                 </c:forEach>
                 <!-- Add more time slots and classes for each day -->

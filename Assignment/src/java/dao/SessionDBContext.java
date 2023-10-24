@@ -15,9 +15,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +56,7 @@ public class SessionDBContext extends DBContext<Session> {
         String regex = "^[a-zA-Z]+[0-9]+@fe.edu.vn$";
         boolean matching = loggedAccount.getEmail().matches(regex);
         if (matching) {
-            sqlGetSession = "SELECT ses.session_id, ses.lecture_id, ses.group_id, g.group_name, g.course_id, \n"
+            sqlGetSession = "SELECT ses.session_id, ses.lecture_id, ses.group_id, g.group_name, g.course_id, ses.is_attended,\n"
                     + "sl.slot_id, sl.start_time, sl.end_time, ses.session_date, ses.room_id FROM [session] ses\n"
                     + "INNER JOIN lecture l ON ses.lecture_id = l.lecture_id\n"
                     + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
@@ -66,7 +64,7 @@ public class SessionDBContext extends DBContext<Session> {
                     + "INNER JOIN slot sl ON sl.slot_id = ses.slot_id\n"
                     + "WHERE ses.session_date >= ? AND ses.session_date <= ? AND l.lecture_email = ?";
         } else {
-            sqlGetSession = "SELECT ses.session_id, ses.group_id, g.group_name, ses.lecture_id, g.course_id, sl.slot_id, sl.start_time, sl.end_time, r.room_id, ses.session_date FROM [session] ses\n"
+            sqlGetSession = "SELECT ses.session_id, ses.group_id, g.group_name, ses.lecture_id, g.course_id, sl.slot_id, sl.start_time, sl.end_time, r.room_id, ses.session_date, ses.is_attended FROM [session] ses\n"
                     + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
                     + "INNER JOIN student_belong_to_group sbtg ON g.group_id = sbtg.group_id\n"
                     + "INNER JOIN student s ON s.student_id = sbtg.student_id\n"
@@ -95,6 +93,7 @@ public class SessionDBContext extends DBContext<Session> {
                 Course course = new Course();
                 course.setCourseId(rs.getString("course_id"));
                 Session ses = new Session();
+                ses.setIsAttended(rs.getBoolean("is_attended"));
                 ses.setSessionId(Integer.parseInt(rs.getString("session_id")));
                 ses.setCourse(course);
                 ses.setLecture(lecture);
