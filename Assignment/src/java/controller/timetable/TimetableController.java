@@ -5,9 +5,11 @@
 package controller.timetable;
 
 import controller.authentication.AuthorizationController;
+import dao.LectureDBContext;
 import dao.SessionDBContext;
 import dao.SlotDbContext;
 import entity.Account;
+import entity.Lecture;
 import entity.Role;
 import entity.Session;
 import entity.Slot;
@@ -15,9 +17,7 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import util.DateTimeHelper;
 
@@ -36,15 +36,32 @@ public class TimetableController extends AuthorizationController {
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account loggedAccount, ArrayList<Role> roles) throws ServletException, IOException {
         ArrayList<Date> dates = DateTimeHelper.getCurrentWeekDates();
         SessionDBContext sessionDb = new SessionDBContext();
-        ArrayList<Session> sessions = sessionDb.list(dates.get(0), dates.get(dates.size()-1), loggedAccount);
+        ArrayList<Session> sessions = sessionDb.list(dates.get(0), dates.get(dates.size() - 1), loggedAccount);
         SlotDbContext slotDb = new SlotDbContext();
         ArrayList<Slot> slots = slotDb.list();
+        LectureDBContext lectureDb = new LectureDBContext();
         request.setAttribute("email", loggedAccount.getEmail());
         request.setAttribute("dates", dates);
         request.setAttribute("slots", slots);
         request.setAttribute("sessions", sessions);
         request.setAttribute("email", loggedAccount.getEmail());
-        request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
+        String regex = "^[a-zA-Z]+[0-9]+@fe.edu.vn$";
+        boolean matching = loggedAccount.getEmail().matches(regex);
+        if (matching) {
+            Lecture param = new Lecture();
+            param.setLectureEmail(loggedAccount.getEmail());
+            Lecture lecture = lectureDb.get(param);
+            request.setAttribute("lecture", lecture);
+            request.getRequestDispatcher("view/timetable_lecture.jsp").forward(request, response);
+        } else {
+            ArrayList<Lecture> lectures = new ArrayList<>();
+            for (Session session : sessions) {
+                Lecture lecture = lectureDb.get(session.getLecture());
+                lectures.add(lecture);
+            }
+            request.setAttribute("lectures", lectures);
+            request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -55,12 +72,29 @@ public class TimetableController extends AuthorizationController {
         ArrayList<Session> sessions = sessionDb.list(startSQLDate, endSQLDate, loggedAccount);
         SlotDbContext slotDb = new SlotDbContext();
         ArrayList<Slot> slots = slotDb.list();
+        LectureDBContext lectureDb = new LectureDBContext();
         ArrayList<Date> dates = DateTimeHelper.getDateInRange(startSQLDate, endSQLDate);
         request.setAttribute("email", loggedAccount.getEmail());
         request.setAttribute("dates", dates);
         request.setAttribute("slots", slots);
         request.setAttribute("sessions", sessions);
-        request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
+        String regex = "^[a-zA-Z]+[0-9]+@fe.edu.vn$";
+        boolean matching = loggedAccount.getEmail().matches(regex);
+        if (matching) {
+            Lecture param = new Lecture();
+            param.setLectureEmail(loggedAccount.getEmail());
+            Lecture lecture = lectureDb.get(param);
+            request.setAttribute("lecture", lecture);
+            request.getRequestDispatcher("view/timetable_lecture.jsp").forward(request, response);
+        } else {
+            ArrayList<Lecture> lectures = new ArrayList<>();
+            for (Session session : sessions) {
+                Lecture lecture = lectureDb.get(session.getLecture());
+                lectures.add(lecture);
+            }
+            request.setAttribute("lectures", lectures);
+            request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
+        }
     }
 
 }

@@ -54,14 +54,27 @@ public class SessionDBContext extends DBContext<Session> {
 
     public ArrayList<Session> list(Date startDate, Date endDate, Account loggedAccount) {
         ArrayList<Session> sessions = new ArrayList<>();
-        try {
-            String sqlGetSession = "SELECT ses.session_id, ses.group_id, g.group_name, ses.lecture_id, g.course_id, sl.slot_id, sl.start_time, sl.end_time, r.room_id, ses.session_date FROM [session] ses\n"
+        String sqlGetSession = "";
+        String regex = "^[a-zA-Z]+[0-9]+@fe.edu.vn$";
+        boolean matching = loggedAccount.getEmail().matches(regex);
+        if (matching) {
+            sqlGetSession = "SELECT ses.session_id, ses.lecture_id, ses.group_id, g.group_name, g.course_id, \n"
+                    + "sl.slot_id, sl.start_time, sl.end_time, ses.session_date, ses.room_id FROM [session] ses\n"
+                    + "INNER JOIN lecture l ON ses.lecture_id = l.lecture_id\n"
+                    + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
+                    + "INNER JOIN room r ON r.room_id = ses.room_id\n"
+                    + "INNER JOIN slot sl ON sl.slot_id = ses.slot_id\n"
+                    + "WHERE ses.session_date >= ? AND ses.session_date <= ? AND l.lecture_email = ?";
+        } else {
+            sqlGetSession = "SELECT ses.session_id, ses.group_id, g.group_name, ses.lecture_id, g.course_id, sl.slot_id, sl.start_time, sl.end_time, r.room_id, ses.session_date FROM [session] ses\n"
                     + "INNER JOIN [group] g ON g.group_id = ses.group_id\n"
                     + "INNER JOIN student_belong_to_group sbtg ON g.group_id = sbtg.group_id\n"
                     + "INNER JOIN student s ON s.student_id = sbtg.student_id\n"
                     + "INNER JOIN slot sl ON sl.slot_id = ses.slot_id\n"
                     + "INNER JOIN room r ON r.room_id = ses.room_id\n"
                     + "WHERE ses.session_date >= ? AND ses.session_date <= ? AND s.student_email = ?";
+        }
+        try {
             PreparedStatement stm = connection.prepareStatement(sqlGetSession);
             stm.setDate(1, startDate);
             stm.setDate(2, endDate);
