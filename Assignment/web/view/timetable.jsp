@@ -65,7 +65,17 @@
                                 <c:forEach items="${requestScope.sessions}" var="ses">
                                     <c:if test="${ses.sessionDate eq date and ses.slot.slotId eq slot.slotId}">
                                         ${ses.course.courseId} - ${ses.lecture.lectureId} <br> 
-                                        ${ses.room.roomId} - ${ses.group.groupName}
+                                        ${ses.room.roomId} - ${ses.group.groupName} <br>
+                                        <c:if test="${ses.isAttended eq true}">
+                                            <c:forEach items="${requestScope.attendances}" var="attend">
+                                                <c:if test="${ses.sessionId eq attend.session.sessionId}">
+                                                    <p>${attend.status? 'Attended' : 'Absent'}</p>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+                                        <c:if test="${ses.isAttended eq false}">
+                                            <p>Not yet</p>
+                                        </c:if>
                                     </c:if>
                                 </c:forEach>
                             </td>

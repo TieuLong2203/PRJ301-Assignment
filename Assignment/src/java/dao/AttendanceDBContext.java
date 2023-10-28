@@ -6,7 +6,10 @@ package dao;
 
 import entity.Attendance;
 import entity.Session;
+import entity.Student;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -93,6 +96,33 @@ public class AttendanceDBContext extends DBContext<Attendance> {
             }
         }
 
+    }
+
+    public Attendance get(Session session, String studentEmail) {
+        try {
+            String sqlGetStudentAttendance = "SELECT a.session_id, a.date_time, a.[status], a.[description] FROM attendance a\n"
+                    + "INNER JOIN student s ON s.student_id = a.student_id\n"
+                    + "INNER JOIN account ac ON ac.email = s.student_email\n"
+                    + "WHERE ac.email = ? and a.session_id = ?";
+            PreparedStatement stm = connection.prepareStatement(sqlGetStudentAttendance);
+            stm.setString(1, studentEmail);
+            stm.setInt(2, session.getSessionId());
+            ResultSet rs = stm.executeQuery();
+            if(rs.next()) {
+                Attendance attendance = new Attendance();
+                attendance.setSession(session);
+                Student student = new Student();
+                student.setStudentEmail(studentEmail);
+                attendance.setStudent(student);
+                attendance.setDate_time(rs.getDate("date_time"));
+                attendance.setDescription(rs.getString("description"));
+                attendance.setStatus(rs.getBoolean("status"));
+                return attendance;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AttendanceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

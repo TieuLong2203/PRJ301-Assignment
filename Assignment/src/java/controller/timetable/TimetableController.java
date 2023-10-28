@@ -5,10 +5,12 @@
 package controller.timetable;
 
 import controller.authentication.AuthorizationController;
+import dao.AttendanceDBContext;
 import dao.LectureDBContext;
 import dao.SessionDBContext;
 import dao.SlotDbContext;
 import entity.Account;
+import entity.Attendance;
 import entity.Lecture;
 import entity.Role;
 import entity.Session;
@@ -54,11 +56,20 @@ public class TimetableController extends AuthorizationController {
             request.setAttribute("lecture", lecture);
             request.getRequestDispatcher("view/timetable_lecture.jsp").forward(request, response);
         } else {
+            ArrayList<Attendance> attendances = new ArrayList<>();
+            AttendanceDBContext attendanceDb = new AttendanceDBContext();
+            for (Session session : sessions) {
+                Attendance attendance = attendanceDb.get(session, loggedAccount.getEmail());
+                if (attendance != null) {
+                    attendances.add(attendance);
+                }
+            }
             ArrayList<Lecture> lectures = new ArrayList<>();
             for (Session session : sessions) {
                 Lecture lecture = lectureDb.get(session.getLecture());
                 lectures.add(lecture);
             }
+            request.setAttribute("attendances", attendances);
             request.setAttribute("lectures", lectures);
             request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
         }
@@ -87,11 +98,20 @@ public class TimetableController extends AuthorizationController {
             request.setAttribute("lecture", lecture);
             request.getRequestDispatcher("view/timetable_lecture.jsp").forward(request, response);
         } else {
+            ArrayList<Attendance> attendances = new ArrayList<>();
+            AttendanceDBContext attendanceDb = new AttendanceDBContext();
+            for (Session session : sessions) {
+                Attendance attendance = attendanceDb.get(session, loggedAccount.getEmail());
+                if (attendance != null) {
+                    attendances.add(attendance);
+                }
+            }
             ArrayList<Lecture> lectures = new ArrayList<>();
             for (Session session : sessions) {
                 Lecture lecture = lectureDb.get(session.getLecture());
                 lectures.add(lecture);
             }
+            request.setAttribute("attendances", attendances);
             request.setAttribute("lectures", lectures);
             request.getRequestDispatcher("view/timetable.jsp").forward(request, response);
         }
