@@ -4,14 +4,18 @@
  */
 package entity;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luulo
  */
-public class Course extends BaseEntity{
+public class Course extends BaseEntity {
+
     private String courseId;
     private String courseName;
     private Department department;
+    private ArrayList<Group> groups = new ArrayList();
 
     public Course() {
     }
@@ -20,6 +24,14 @@ public class Course extends BaseEntity{
         this.courseId = courseId;
         this.courseName = courseName;
         this.department = department;
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
     }
 
     public String getCourseId() {
@@ -45,6 +57,5 @@ public class Course extends BaseEntity{
     public void setDepartment(Department department) {
         this.department = department;
     }
-    
-    
+
 }

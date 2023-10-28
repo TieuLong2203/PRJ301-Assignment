@@ -193,4 +193,29 @@ public class StudentDBContext extends DBContext<Student> {
         return students;
     }
 
+    public ArrayList<Student> listStudentOfGroup(int groupId) {
+        ArrayList<Student> students = new ArrayList<>();
+        try {
+            String sqlGetStudents = "SELECT DISTINCT s.student_id, s.student_name, s.gender FROM student_belong_to_group sbtg\n"
+                    + "INNER JOIN student s ON sbtg.student_id = s.student_id\n"
+                    + "WHERE sbtg.group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(sqlGetStudents);
+            stm.setInt(1, groupId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentId(rs.getString("student_id"));
+                student.setStudentName(rs.getString("student_name"));
+                student.setGender(rs.getBoolean("gender"));
+                students.add(student);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return students;
+    }
+
+    public ArrayList<Student> listStudentOfGroup(String groupId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
