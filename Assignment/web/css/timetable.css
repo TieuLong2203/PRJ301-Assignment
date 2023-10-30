@@ -19,3 +19,13 @@ th {
     color: white;
     background-color: #e09500;
 }
+
+.line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
